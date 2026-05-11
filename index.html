@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yeroo Coffee — Addis Ababa, Ethiopia</title>
+  <meta name="description" content="Yeroo Coffee — Premium Ethiopian café-restaurant in Addisu Gebeya, Addis Ababa. From the birthplace of coffee.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            coffee:     '#6B3A2A',
+            terracotta: '#C4783B',
+            cream:      '#F5ECD7',
+            espresso:   '#1C1209',
+            forest:     '#2D4A3E',
+          },
+          fontFamily: {
+            display: ['"Playfair Display"', 'serif'],
+            body:    ['"DM Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    *, body { font-family: 'DM Sans', sans-serif; }
+
+    /* ── Grain overlay ──────────────────────────── */
+    .grain::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── Coffee steam animation ─────────────────── */
+    @keyframes steam {
+      0%   { transform: translateY(0) scaleX(1);   opacity: 0.7; }
+      50%  { transform: translateY(-18px) scaleX(1.15); opacity: 0.35; }
+      100% { transform: translateY(-36px) scaleX(0.8);  opacity: 0; }
+    }
+    .steam1 { animation: steam 2.8s ease-in-out infinite; }
+    .steam2 { animation: steam 2.8s ease-in-out infinite 0.55s; }
+    .steam3 { animation: steam 2.8s ease-in-out infinite 1.1s; }
+
+    /* ── Scroll reveal ──────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Masonry gallery ────────────────────────── */
+    .masonry { columns: 3 180px; gap: 0.75rem; }
+    .masonry > * { break-inside: avoid; margin-bottom: 0.75rem; }
+    @media(max-width:640px){ .masonry { columns: 2 140px; } }
+
+    /* ── Tibeb decorative strip ─────────────────── */
+    .tibeb {
+      height: 6px;
+      background: repeating-linear-gradient(90deg,
+        #C4783B 0 10px, #6B3A2A 10px 20px, #2D4A3E 20px 30px, #6B3A2A 30px 40px);
+    }
+
+    /* ── Custom scrollbar ───────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #1C1209; }
+    ::-webkit-scrollbar-thumb { background: #C4783B; border-radius: 3px; }
+
+    /* ── Admin kanban scroll ────────────────────── */
+    .kanban-col { min-height: 200px; }
+
+    /* ── Print: show only menu ──────────────────── */
+    @media print {
+      .no-print { display: none !important; }
+      .print-menu { display: block !important; }
+      body { background: white; color: black; }
+    }
+    .print-menu { display: none; }
+
+    /* ── Smooth scroll ──────────────────────────── */
+    html { scroll-behavior: smooth; }
+
+    /* ── Shimmer loading ────────────────────────── */
+    @keyframes shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+    .shimmer {
+      background: linear-gradient(90deg, #e2d5c3 25%, #f0e8d8 50%, #e2d5c3 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.4s infinite;
+    }
+    .shimmer-dark {
+      background: linear-gradient(90deg, #2a1e14 25%, #3a2a1e 50%, #2a1e14 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.4s infinite;
+    }
+
+    /* ── Toast slide in ─────────────────────────── */
+    @keyframes slideIn {
+      from { transform: translateX(110%); opacity: 0; }
+      to   { transform: translateX(0);   opacity: 1; }
+    }
+    .toast-enter { animation: slideIn 0.3s ease; }
+
+    /* ── Menu pill active ───────────────────────── */
+    .pill-active {
+      background: #6B3A2A;
+      color: #F5ECD7;
+    }
+    .pill-inactive {
+      background: transparent;
+      color: #6B3A2A;
+      border: 1.5px solid #6B3A2A;
+    }
+    .pill-inactive:hover { background: #6B3A2A22; }
+  </style>
+</head>
+<body class="bg-cream text-espresso">
+
+  <!-- Loading screen -->
+  <div id="app-loading" style="position:fixed;inset:0;background:#1C1209;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:16px;">
+    <svg width="48" height="60" viewBox="0 0 48 60" fill="none">
+      <ellipse cx="24" cy="42" rx="18" ry="14" fill="#C4783B"/>
+      <ellipse cx="24" cy="38" rx="14" ry="10" fill="#6B3A2A"/>
+      <rect x="20" y="10" width="8" height="28" rx="4" fill="#6B3A2A"/>
+      <ellipse cx="24" cy="10" rx="8" ry="5" fill="#C4783B"/>
+      <path d="M38 38 Q44 38 44 44" stroke="#C4783B" stroke-width="3" stroke-linecap="round" fill="none"/>
+    </svg>
+    <div style="color:#F5ECD7;font-family:'DM Sans',sans-serif;font-size:14px;letter-spacing:2px;opacity:0.7;">YEROO COFFEE</div>
+  </div>
+
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useCallback, createContext, useContext } = React;
+
+    // ─────────────────────────────────────────────
+    // SUPABASE
+    // ─────────────────────────────────────────────
+    const SUPA_URL  = 'https://zhmkfkeokkzysaqwftaq.supabase.co';
+    const SUPA_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpobWtma2Vva2t6eXNhcXdmdGFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2OTc0ODQsImV4cCI6MjA5MDI3MzQ4NH0.8kRSm6kg_yRp8PmM_eN-209oOiTGO8nU4ROQ0Efuilw';
+    const db = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+
+    // ─────────────────────────────────────────────
+    // UTILITIES
+    // ─────────────────────────────────────────────
+    const fmt  = (n) => `Br ${Number(n).toLocaleString()}`;
+    const today = () => new Date().toISOString().split('T')[0];
+    const isToday = (ts) => ts && ts.startsWith(today());
+    const uuid  = () => (crypto?.randomUUID?.() ?? Date.now().toString(36) + Math.random().toString(36).slice(2));
+
+    const CATEGORIES = ['Breakfast','Main Courses','Salad','Pasta','Snack Wrap','Taco','Burgers','Pizza','Takeaway'];
+
+    // ─────────────────────────────────────────────
+    // HOOKS
+    // ─────────────────────────────────────────────
+    function useHashRouter() {
+      const [route, setRoute] = useState(window.location.hash === '#admin' ? 'admin' : 'public');
+      useEffect(() => {
+        const h = () => setRoute(window.location.hash === '#admin' ? 'admin' : 'public');
+        window.addEventListener('hashchange', h);
+        return () => window.removeEventListener('hashchange', h);
+      }, []);
+      return route;
+    }
+
+    function useToast() {
+      const [toasts, setToasts] = useState([]);
+      const add = useCallback((msg, type = 'success') => {
+        const id = uuid();
+        setToasts(t => [...t, { id, msg, type }]);
+        setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 3200);
+      }, []);
+      return { toasts, add };
+    }
+
+    function useReveal() {
+      const ref = useRef(null);
+      useEffect(() => {
+        if (!ref.current) return;
+        const obs = new IntersectionObserver(([e]) => {
+          if (e.isIntersecting) { e.target.classList.add('visible'); obs.disconnect(); }
+        }, { threshold: 0.12 });
+        obs.observe(ref.current);
+        return () => obs.disconnect();
+      }, []);
+      return ref;
+    }
+
+    // ─────────────────────────────────────────────
+    // TOAST CONTAINER
+    // ─────────────────────────────────────────────
+    function ToastContainer({ toasts }) {
+      return (
+        <div className="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none">
+          {toasts.map(t => (
+            <div key={t.id} className={`toast-enter pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg shadow-xl text-sm font-medium max-w-xs ${
+              t.type === 'success' ? 'bg-forest text-cream' :
+              t.type === 'error'   ? 'bg-red-800 text-white' :
+                                     'bg-coffee text-cream'
+            }`}>
+              <span>{t.type === 'success' ? '✓' : t.type === 'error' ? '✕' : 'ℹ'}</span>
+              <span>{t.msg}</span>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // ICONS (inline SVG)
+    // ─────────────────────────────────────────────
+    const Icon = ({ d, size = 20, className = '' }) => (
+      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <path d={d} />
+      </svg>
+    );
+    const IHome     = (p) => <Icon {...p} d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z M9 22V12h6v10" />;
+    const IMenu     = (p) => <Icon {...p} d="M3 12h18M3 6h18M3 18h18" />;
+    const ICalendar = (p) => <Icon {...p} d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z" />;
+    const IShop     = (p) => <Icon {...p} d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0" />;
+    const IImage    = (p) => <Icon {...p} d="M21 15l-5-5L5 20M14 10.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5zM3 3h18a2 2 0 012 2v14a2 2 0 01-2 2H3a2 2 0 01-2-2V5a2 2 0 012-2z" />;
+    const IStar     = (p) => <Icon {...p} d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />;
+    const IEdit     = (p) => <Icon {...p} d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />;
+    const ITrash    = (p) => <Icon {...p} d="M3 6h18M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />;
+    const IPlus     = (p) => <Icon {...p} d="M12 5v14M5 12h14" />;
+    const IDownload = (p) => <Icon {...p} d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />;
+    const ILogout   = (p) => <Icon {...p} d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />;
+    const IUsers    = (p) => <Icon {...p} d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />;
+
+    const StarRating = ({ rating, size = 16 }) => (
+      <div className="flex gap-0.5">
+        {[1,2,3,4,5].map(i => (
+          <svg key={i} width={size} height={size} viewBox="0 0 24 24" fill={i <= rating ? '#C4783B' : 'none'} stroke="#C4783B" strokeWidth="1.5">
+            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+          </svg>
+        ))}
+      </div>
+    );
+
+    // ─────────────────────────────────────────────
+    // DIETARY BADGES
+    // ─────────────────────────────────────────────
+    function DietBadge({ item }) {
+      return (
+        <div className="flex gap-1 flex-wrap">
+          {item.is_fasting && <span className="text-[10px] px-1.5 py-0.5 rounded bg-forest text-cream font-medium">ፆም Fasting</span>}
+          {item.is_veg     && <span className="text-[10px] px-1.5 py-0.5 rounded bg-green-700 text-white font-medium">🌱 Veg</span>}
+          {item.is_spicy   && <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-700 text-white font-medium">🌶 Spicy</span>}
+          {!item.available && <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-500 text-white font-medium">Sold Out</span>}
+        </div>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // JEBENA LOGO SVG
+    // ─────────────────────────────────────────────
+    function JebenaIcon({ size = 40, color = '#C4783B' }) {
+      return (
+        <svg width={size} height={size * 1.2} viewBox="0 0 40 48" fill="none">
+          {/* Body */}
+          <ellipse cx="20" cy="34" rx="14" ry="11" fill={color} opacity="0.9"/>
+          {/* Neck */}
+          <rect x="17" y="14" width="6" height="20" rx="3" fill={color}/>
+          {/* Lip */}
+          <ellipse cx="20" cy="14" rx="7" ry="4" fill={color}/>
+          {/* Spout */}
+          <path d="M6 30 Q0 28 1 34 Q2 38 8 37" stroke={color} strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+          {/* Handle */}
+          <path d="M34 30 Q42 30 42 36 Q42 42 34 42" stroke={color} strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+          {/* Steam wisps */}
+          <path d="M16 10 Q14 6 16 2" stroke={color} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.6"/>
+          <path d="M20 8 Q18 4 20 0" stroke={color} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.6"/>
+          <path d="M24 10 Q22 6 24 2" stroke={color} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.6"/>
+        </svg>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // STEAM SVG (hero)
+    // ─────────────────────────────────────────────
+    function SteamSVG() {
+      return (
+        <svg width="80" height="60" viewBox="0 0 80 60" fill="none" className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2">
+          <path className="steam1" d="M20 55 Q16 45 22 35 Q28 25 24 15" stroke="#C4783B" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.7"/>
+          <path className="steam2" d="M40 55 Q36 43 42 33 Q48 22 44 12" stroke="#F5ECD7" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.5"/>
+          <path className="steam3" d="M60 55 Q56 45 62 35 Q68 25 64 15" stroke="#C4783B" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.7"/>
+        </svg>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // NAVBAR
+    // ─────────────────────────────────────────────
+    function Navbar() {
+      const [open, setOpen] = useState(false);
+      const [scrolled, setScrolled] = useState(false);
+      useEffect(() => {
+        const h = () => setScrolled(window.scrollY > 60);
+        window.addEventListener('scroll', h);
+        return () => window.removeEventListener('scroll', h);
+      }, []);
+
+      const links = [
+        { label: 'Home',        href: '#home' },
+        { label: 'About',       href: '#about' },
+        { label: 'Menu',        href: '#menu' },
+        { label: 'Gallery',     href: '#gallery' },
+        { label: 'Reservations',href: '#reservation' },
+        { label: 'Contact',     href: '#contact' },
+      ];
+
+      return (
+        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 no-print ${
+          scrolled ? 'bg-espresso/95 backdrop-blur-sm shadow-lg' : 'bg-transparent'
+        }`}>
+          <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
+            <a href="#home" className="flex items-center gap-2 text-cream">
+              <JebenaIcon size={28} color="#C4783B" />
+              <span className="font-display font-bold text-lg tracking-wide">Yeroo Coffee</span>
+            </a>
+            {/* Desktop */}
+            <div className="hidden md:flex items-center gap-6">
+              {links.map(l => (
+                <a key={l.href} href={l.href} className="text-cream/80 hover:text-terracotta text-sm font-medium transition-colors duration-200">
+                  {l.label}
+                </a>
+              ))}
+            </div>
+            {/* Hamburger */}
+            <button className="md:hidden text-cream p-1" onClick={() => setOpen(!open)}>
+              <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                {open
+                  ? <><path d="M18 6L6 18"/><path d="M6 6l12 12"/></>
+                  : <><path d="M3 12h18"/><path d="M3 6h18"/><path d="M3 18h18"/></>
+                }
+              </svg>
+            </button>
+          </div>
+          {/* Mobile drawer */}
+          {open && (
+            <div className="md:hidden bg-espresso/98 backdrop-blur-sm px-6 pb-4 flex flex-col gap-3">
+              {links.map(l => (
+                <a key={l.href} href={l.href} onClick={() => setOpen(false)}
+                  className="text-cream/80 hover:text-terracotta py-2 text-sm font-medium border-b border-white/5">
+                  {l.label}
+                </a>
+              ))}
+            </div>
+          )}
+        </nav>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // HERO
+    // ─────────────────────────────────────────────
+    function HeroSection() {
+      return (
+        <section id="home" className="relative min-h-screen flex items-center justify-center grain bg-espresso overflow-hidden">
+          {/* Background radial glow */}
+          <div className="absolute inset-0 bg-gradient-radial" style={{background:'radial-gradient(ellipse at 30% 60%, #3a1a0a 0%, #1C1209 60%)'}}/>
+          {/* Decorative circle */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-terracotta/10 pointer-events-none"/>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-terracotta/8 pointer-events-none"/>
+
+          <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
+            {/* Jebena + steam */}
+            <div className="flex justify-center mb-8 relative">
+              <div className="relative inline-block">
+                <SteamSVG />
+                <div className="w-24 h-24 rounded-full bg-terracotta/10 border border-terracotta/30 flex items-center justify-center">
+                  <JebenaIcon size={52} color="#C4783B" />
+                </div>
+              </div>
+            </div>
+
+            {/* Tibeb strip */}
+            <div className="tibeb w-16 mx-auto mb-6 rounded-full"/>
+
+            <p className="text-terracotta text-sm font-medium tracking-[0.3em] uppercase mb-3">Est. Addis Ababa, Ethiopia</p>
+
+            <h1 className="font-display text-5xl md:text-7xl text-cream font-bold leading-tight mb-4">
+              Yeroo<br/><em className="text-terracotta">Coffee</em>
+            </h1>
+
+            <p className="text-cream/60 text-lg md:text-xl font-light mb-10 max-w-lg mx-auto leading-relaxed">
+              From the Birthplace of Coffee —<br/>Addis Ababa, Ethiopia
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="#menu" className="bg-terracotta hover:bg-coffee text-cream px-8 py-3.5 rounded-full font-semibold text-sm tracking-wide transition-all duration-300 shadow-lg hover:shadow-terracotta/30">
+                View Our Menu
+              </a>
+              <a href="#reservation" className="border border-cream/30 hover:border-terracotta text-cream hover:text-terracotta px-8 py-3.5 rounded-full font-semibold text-sm tracking-wide transition-all duration-300">
+                Reserve a Table
+              </a>
+            </div>
+
+            {/* Scroll hint */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40">
+              <span className="text-cream text-xs tracking-widest uppercase">Scroll</span>
+              <div className="w-px h-8 bg-cream/40"/>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // ABOUT
+    // ─────────────────────────────────────────────
+    function AboutSection() {
+      const ref = useReveal();
+      const highlights = [
+        { icon: '🍳', label: 'Ethiopian Breakfast' },
+        { icon: '🔥', label: 'Wood-fired Dishes' },
+        { icon: '🍕', label: 'Pizza Corner' },
+        { icon: '☕', label: 'Fresh Coffee' },
+      ];
+      return (
+        <section id="about" className="py-24 bg-cream overflow-hidden">
+          <div className="max-w-7xl mx-auto px-6">
+            <div ref={ref} className="reveal grid md:grid-cols-2 gap-16 items-center">
+              {/* Text */}
+              <div>
+                <div className="tibeb w-12 mb-6 rounded-full"/>
+                <p className="text-terracotta text-xs font-semibold tracking-[0.3em] uppercase mb-3">Our Story</p>
+                <h2 className="font-display text-4xl md:text-5xl text-coffee font-bold mb-6 leading-tight">
+                  Where Every Cup<br/>Tells a Story
+                </h2>
+                <p className="text-espresso/70 leading-relaxed mb-5 text-base">
+                  Nestled in the heart of Addisu Gebeya, Addis Ababa, Yeroo Coffee was born from a deep love for Ethiopia's legendary coffee culture — the land where coffee was first discovered over a thousand years ago.
+                </p>
+                <p className="text-espresso/70 leading-relaxed mb-8 text-base">
+                  We blend the warmth of Ethiopian hospitality with globally-inspired flavours: from traditional firfir and shiro to stone-baked pizzas and craft burgers. Every dish is made with care, every cup brewed with intention.
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  {highlights.map(h => (
+                    <div key={h.label} className="flex items-center gap-3 bg-white/60 border border-coffee/10 rounded-xl px-4 py-3">
+                      <span className="text-xl">{h.icon}</span>
+                      <span className="text-sm font-semibold text-coffee">{h.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Decorative panel */}
+              <div className="relative">
+                <div className="absolute -top-4 -left-4 w-full h-full rounded-2xl border-2 border-terracotta/20"/>
+                <div className="relative bg-coffee rounded-2xl overflow-hidden p-10 flex flex-col items-center justify-center min-h-80">
+                  {/* Ethiopian cross / tibeb pattern */}
+                  <svg width="200" height="200" viewBox="0 0 200 200" fill="none" className="opacity-20">
+                    <rect x="85" y="10" width="30" height="180" rx="4" fill="#C4783B"/>
+                    <rect x="10" y="85" width="180" height="30" rx="4" fill="#C4783B"/>
+                    <rect x="60" y="60" width="80" height="80" rx="4" fill="#F5ECD7"/>
+                    <rect x="75" y="75" width="50" height="50" rx="2" fill="#C4783B"/>
+                    {[0,45,90,135].map(r => (
+                      <rect key={r} x="96" y="20" width="8" height="40" rx="2" fill="#C4783B"
+                        transform={`rotate(${r} 100 100)`}/>
+                    ))}
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
+                    <JebenaIcon size={60} color="#C4783B" />
+                    <p className="text-cream font-display text-2xl font-bold mt-4 mb-2">Addisu Gebeya</p>
+                    <p className="text-cream/60 text-sm">Addis Ababa, Ethiopia</p>
+                    <div className="tibeb w-16 mt-4 rounded-full"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // MENU ITEM CARD
+    // ─────────────────────────────────────────────
+    function MenuItemCard({ item }) {
+      return (
+        <div className={`bg-white rounded-xl p-4 shadow-sm border border-coffee/8 hover:shadow-md hover:border-terracotta/20 transition-all duration-200 ${!item.available ? 'opacity-50' : ''}`}>
+          <div className="flex justify-between items-start gap-2 mb-1.5">
+            <h4 className="font-semibold text-espresso text-sm leading-snug flex-1">{item.name}</h4>
+            <span className="font-bold text-terracotta text-sm whitespace-nowrap">{fmt(item.price)}</span>
+          </div>
+          {item.description && (
+            <p className="text-espresso/55 text-xs leading-relaxed mb-2">{item.description}</p>
+          )}
+          <DietBadge item={item} />
+        </div>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // MENU SECTION
+    // ─────────────────────────────────────────────
+    function MenuSection({ menuItems, loading }) {
+      const ref = useReveal();
+      const [activeTab, setActiveTab] = useState('All');
+      const [fastingOnly, setFastingOnly] = useState(false);
+      const allCategories = ['All', ...CATEGORIES];
+      const filtered = menuItems.filter(item => {
+        if (fastingOnly && !item.is_fasting) return false;
+        if (activeTab !== 'All' && item.category !== activeTab) return false;
+        return true;
+      });
+
+      return (
+        <section id="menu" className="py-24 bg-white">
+          <div className="max-w-7xl mx-auto px-6">
+            <div ref={ref} className="reveal text-center mb-12">
+              <div className="tibeb w-12 mx-auto mb-4 rounded-full"/>
+              <p className="text-terracotta text-xs font-semibold tracking-[0.3em] uppercase mb-2">Our Offerings</p>
+              <h2 className="font-display text-4xl md:text-5xl text-coffee font-bold mb-3">The Menu</h2>
+              <p className="text-espresso/55 max-w-md mx-auto text-sm">Crafted with love — from traditional Ethiopian dishes to global favourites</p>
+            </div>
+
+            {/* Filters */}
+            <div className="mb-6 flex flex-col gap-4">
+              {/* Fasting toggle */}
+              <div className="flex justify-center">
+                <button onClick={() => setFastingOnly(f => !f)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all border ${
+                    fastingOnly ? 'bg-forest text-cream border-forest' : 'bg-transparent text-forest border-forest'
+                  }`}>
+                  <span>ፆም</span> Fasting Only
+                </button>
+              </div>
+              {/* Category pills */}
+              <div className="flex gap-2 overflow-x-auto pb-2 justify-start md:justify-center">
+                {allCategories.map(cat => (
+                  <button key={cat} onClick={() => setActiveTab(cat)}
+                    className={`shrink-0 px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200 ${
+                      activeTab === cat ? 'pill-active' : 'pill-inactive'
+                    }`}>
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Items */}
+            {loading ? (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[...Array(9)].map((_, i) => (
+                  <div key={i} className="shimmer h-24 rounded-xl"/>
+                ))}
+              </div>
+            ) : (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filtered.map(item => <MenuItemCard key={item.id} item={item} />)}
+                {filtered.length === 0 && (
+                  <div className="col-span-3 text-center py-16 text-espresso/40 text-sm">No items found</div>
+                )}
+              </div>
+            )}
+
+            <p className="text-center text-espresso/40 text-xs mt-8 italic">All prices include 15% VAT &amp; 3% service charges</p>
+          </div>
+        </section>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // RESERVATION
+    // ─────────────────────────────────────────────
+    function ReservationSection({ addToast }) {
+      const ref = useReveal();
+      const blank = { name:'', phone:'', date:'', time:'', guests:'2', special_requests:'' };
+      const [form, setForm] = useState(blank);
+      const [submitted, setSubmitted] = useState(false);
+      const [busy, setBusy] = useState(false);
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        setBusy(true);
+        const { error } = await db.from('reservations').insert({
+          name: form.name,
+          phone: form.phone,
+          date: form.date,
+          time: form.time,
+          guests: parseInt(form.guests),
+          special_requests: form.special_requests,
+        });
+        setBusy(false);
+        if (error) { addToast('Failed to submit — please try again', 'error'); return; }
+        setSubmitted(true);
+        setForm(blank);
+      };
+
+      const inp = 'w-full bg-white/10 border border-cream/20 text-cream placeholder-cream/40 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-terracotta transition-colors';
+
+      return (
+        <section id="reservation" className="py-24 bg-forest">
+          <div className="max-w-2xl mx-auto px-6">
+            <div ref={ref} className="reveal text-center mb-10">
+              <div className="tibeb w-12 mx-auto mb-4 rounded-full"/>
+              <p className="text-terracotta text-xs font-semibold tracking-[0.3em] uppercase mb-2">Book Your Table</p>
+              <h2 className="font-display text-4xl text-cream font-bold mb-3">Reserve a Table</h2>
+              <p className="text-cream/60 text-sm">We'd love to host you. Fill in the form and we'll confirm your reservation.</p>
+            </div>
+
+            {submitted ? (
+              <div className="bg-terracotta/20 border border-terracotta/40 rounded-2xl p-8 text-center">
+                <div className="text-4xl mb-3">☕</div>
+                <h3 className="font-display text-2xl text-cream font-bold mb-2">Reservation Received!</h3>
+                <p className="text-cream/70 text-sm mb-5">Thank you! We'll confirm your reservation shortly via phone.</p>
+                <button onClick={() => setSubmitted(false)} className="bg-terracotta text-cream px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-coffee transition-colors">
+                  Make Another Reservation
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="bg-white/8 backdrop-blur-sm border border-cream/10 rounded-2xl p-8 space-y-4">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-cream/60 text-xs font-medium block mb-1.5">Full Name *</label>
+                    <input required className={inp} value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Abebe Bekele"/>
+                  </div>
+                  <div>
+                    <label className="text-cream/60 text-xs font-medium block mb-1.5">Phone *</label>
+                    <input required className={inp} value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} placeholder="+251 9XX XXX XXXX"/>
+                  </div>
+                </div>
+                <div className="grid sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="text-cream/60 text-xs font-medium block mb-1.5">Date *</label>
+                    <input required type="date" className={inp} value={form.date} min={today()} onChange={e => setForm({...form, date: e.target.value})}/>
+                  </div>
+                  <div>
+                    <label className="text-cream/60 text-xs font-medium block mb-1.5">Time *</label>
+                    <input required type="time" className={inp} value={form.time} onChange={e => setForm({...form, time: e.target.value})}/>
+                  </div>
+                  <div>
+                    <label className="text-cream/60 text-xs font-medium block mb-1.5">Guests *</label>
+                    <select required className={inp} value={form.guests} onChange={e => setForm({...form, guests: e.target.value})}>
+                      {[1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={n}>{n} {n===1?'Guest':'Guests'}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-cream/60 text-xs font-medium block mb-1.5">Special Requests</label>
+                  <textarea rows={3} className={inp + ' resize-none'} value={form.special_requests} onChange={e => setForm({...form, special_requests: e.target.value})} placeholder="Allergies, dietary requirements, special occasions…"/>
+                </div>
+                <button type="submit" disabled={busy} className="w-full bg-terracotta hover:bg-coffee text-cream py-3.5 rounded-full font-semibold text-sm tracking-wide transition-colors duration-300 disabled:opacity-60">
+                  {busy ? 'Submitting…' : 'Reserve My Table'}
+                </button>
+              </form>
+            )}
+          </div>
+        </section>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // GALLERY
+    // ─────────────────────────────────────────────
+    function GallerySection({ gallery, loading }) {
+      const ref = useReveal();
+      const [lightbox, setLightbox] = useState(null);
+
+      return (
+        <section id="gallery" className="py-24 bg-espresso">
+          <div className="max-w-7xl mx-auto px-6">
+            <div ref={ref} className="reveal text-center mb-12">
+              <div className="tibeb w-12 mx-auto mb-4 rounded-full"/>
+              <p className="text-terracotta text-xs font-semibold tracking-[0.3em] uppercase mb-2">Moments</p>
+              <h2 className="font-display text-4xl text-cream font-bold">Gallery</h2>
+            </div>
+
+            {loading ? (
+              <div className="masonry">
+                {[...Array(8)].map((_, i) => (
+                  <div key={i} className={`shimmer-dark rounded-lg ${i%3===0 ? 'h-56' : i%3===1 ? 'h-40' : 'h-64'}`}/>
+                ))}
+              </div>
+            ) : (
+              <div className="masonry">
+                {gallery.map(img => (
+                  <div key={img.id} className="rounded-lg overflow-hidden cursor-pointer group relative" onClick={() => setLightbox(img)}>
+                    <img src={img.url} alt={img.caption || 'Yeroo Coffee'} loading="lazy"
+                      className="w-full object-cover group-hover:scale-105 transition-transform duration-500"/>
+                    {img.caption && (
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                        <p className="text-white text-xs">{img.caption}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Lightbox */}
+          {lightbox && (
+            <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4" onClick={() => setLightbox(null)}>
+              <img src={lightbox.url} alt={lightbox.caption} className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"/>
+              <button className="absolute top-6 right-6 text-white text-2xl bg-white/10 w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/20">✕</button>
+            </div>
+          )}
+        </section>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // TESTIMONIALS
+    // ─────────────────────────────────────────────
+    function TestimonialsSection({ testimonials, addToast, loading }) {
+      const ref = useReveal();
+      const [form, setForm] = useState({ name:'', rating:5, body:'' });
+      const [sent, setSent] = useState(false);
+      const [busy, setBusy] = useState(false);
+      const visible = testimonials.filter(t => t.visible);
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        setBusy(true);
+        const { error } = await db.from('testimonials').insert({ ...form, visible: false });
+        setBusy(false);
+        if (error) { addToast('Failed to submit', 'error'); return; }
+        setSent(true);
+      };
+
+      return (
+        <section id="testimonials" className="py-24 bg-cream">
+          <div className="max-w-7xl mx-auto px-6">
+            <div ref={ref} className="reveal text-center mb-12">
+              <div className="tibeb w-12 mx-auto mb-4 rounded-full"/>
+              <p className="text-terracotta text-xs font-semibold tracking-[0.3em] uppercase mb-2">What People Say</p>
+              <h2 className="font-display text-4xl text-coffee font-bold">Guest Reviews</h2>
+            </div>
+
+            {loading ? (
+              <div className="grid md:grid-cols-3 gap-6 mb-12">
+                {[1,2,3].map(i => <div key={i} className="shimmer h-32 rounded-2xl"/>)}
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-3 gap-6 mb-12">
+                {visible.map(t => (
+                  <div key={t.id} className="bg-white rounded-2xl p-6 shadow-sm border border-coffee/8">
+                    <StarRating rating={t.rating} />
+                    <p className="text-espresso/75 text-sm leading-relaxed my-4 italic">"{t.body}"</p>
+                    <p className="font-semibold text-coffee text-sm">— {t.name}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Leave a review */}
+            <div className="max-w-lg mx-auto bg-white rounded-2xl p-6 shadow-sm border border-coffee/10">
+              {sent ? (
+                <div className="text-center py-4">
+                  <div className="text-3xl mb-2">🙏</div>
+                  <p className="font-semibold text-coffee">Thank you for your review!</p>
+                  <p className="text-espresso/55 text-xs mt-1">It will appear after approval.</p>
+                </div>
+              ) : (
+                <>
+                  <h4 className="font-display font-bold text-coffee mb-4">Leave a Review</h4>
+                  <form onSubmit={handleSubmit} className="space-y-3">
+                    <input required placeholder="Your name" value={form.name} onChange={e => setForm({...form, name: e.target.value})}
+                      className="w-full border border-coffee/15 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-terracotta"/>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-espresso/60 font-medium">Rating:</span>
+                      <div className="flex gap-1">
+                        {[1,2,3,4,5].map(n => (
+                          <button type="button" key={n} onClick={() => setForm({...form, rating: n})}>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill={n <= form.rating ? '#C4783B' : 'none'} stroke="#C4783B" strokeWidth="1.5">
+                              <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                            </svg>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <textarea required rows={3} placeholder="Share your experience…" value={form.body} onChange={e => setForm({...form, body: e.target.value})}
+                      className="w-full border border-coffee/15 rounded-lg px-3 py-2.5 text-sm resize-none focus:outline-none focus:border-terracotta"/>
+                    <button type="submit" disabled={busy} className="w-full bg-terracotta hover:bg-coffee text-cream py-2.5 rounded-full text-sm font-semibold transition-colors disabled:opacity-60">
+                      {busy ? 'Submitting…' : 'Submit Review'}
+                    </button>
+                  </form>
+                </>
+              )}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // CONTACT
+    // ─────────────────────────────────────────────
+    function ContactSection() {
+      const ref = useReveal();
+      const hours = [
+        { day: 'Monday – Friday',  time: '7:00 AM – 10:00 PM' },
+        { day: 'Saturday',         time: '7:00 AM – 11:00 PM' },
+        { day: 'Sunday',           time: '8:00 AM – 10:00 PM' },
+      ];
+      return (
+        <section id="contact" className="py-24 bg-espresso">
+          <div className="max-w-7xl mx-auto px-6">
+            <div ref={ref} className="reveal text-center mb-12">
+              <div className="tibeb w-12 mx-auto mb-4 rounded-full"/>
+              <p className="text-terracotta text-xs font-semibold tracking-[0.3em] uppercase mb-2">Find Us</p>
+              <h2 className="font-display text-4xl text-cream font-bold">Location &amp; Hours</h2>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-10">
+              {/* Map */}
+              <div className="rounded-2xl overflow-hidden h-72 md:h-auto shadow-2xl">
+                <iframe
+                  title="Yeroo Coffee Location"
+                  src="https://maps.google.com/maps?q=Addisu+Gebeya,+Addis+Ababa,+Ethiopia&output=embed"
+                  width="100%" height="100%" style={{border:0}} allowFullScreen loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"/>
+              </div>
+
+              {/* Info */}
+              <div className="text-cream space-y-6">
+                <div>
+                  <p className="text-terracotta text-xs font-semibold tracking-widest uppercase mb-2">Address</p>
+                  <p className="text-cream/80 leading-relaxed">Addisu Gebeya<br/>Addis Ababa, Ethiopia</p>
+                </div>
+                <div>
+                  <p className="text-terracotta text-xs font-semibold tracking-widest uppercase mb-2">Opening Hours</p>
+                  <div className="space-y-2">
+                    {hours.map(h => (
+                      <div key={h.day} className="flex justify-between text-sm border-b border-cream/8 pb-2">
+                        <span className="text-cream/70">{h.day}</span>
+                        <span className="font-medium">{h.time}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-terracotta text-xs font-semibold tracking-widest uppercase mb-2">Contact</p>
+                  <p className="text-cream/70 text-sm">📞 +251 911 234 567</p>
+                  <p className="text-cream/70 text-sm mt-1">✉️ info@yeroocoffee.com</p>
+                </div>
+                <div className="flex gap-3 pt-2">
+                  {[
+                    { label: 'Instagram', href: '#', icon: 'M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z' },
+                    { label: 'Facebook', href: '#', icon: 'M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z' },
+                    { label: 'TikTok', href: '#', icon: 'M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z' },
+                  ].map(s => (
+                    <a key={s.label} href={s.href} className="w-9 h-9 rounded-full bg-white/8 hover:bg-terracotta/20 border border-cream/10 hover:border-terracotta/40 flex items-center justify-center transition-all" aria-label={s.label}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-cream/70">
+                        <path d={s.icon}/>
+                      </svg>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // FOOTER
+    // ─────────────────────────────────────────────
+    function Footer() {
+      return (
+        <footer className="bg-espresso border-t border-cream/8 py-8 no-print">
+          <div className="tibeb w-full"/>
+          <div className="max-w-7xl mx-auto px-6 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <JebenaIcon size={22} color="#C4783B"/>
+              <span className="font-display text-cream/80 font-semibold">Yeroo Coffee</span>
+            </div>
+            <p className="text-cream/30 text-xs text-center">© 2025 Yeroo Coffee. Addisu Gebeya, Addis Ababa, Ethiopia.</p>
+            <a href="#admin" className="text-cream/15 hover:text-cream/30 text-xs transition-colors">admin</a>
+          </div>
+        </footer>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // FLOATING BUTTONS
+    // ─────────────────────────────────────────────
+    function WhatsAppFAB({ number }) {
+      const tel = (number || '+251911234567').replace(/\D/g,'');
+      return (
+        <a href={`https://wa.me/${tel}?text=Hello%20Yeroo%20Coffee%2C%20I%27d%20like%20to%20make%20a%20reservation.`}
+          target="_blank" rel="noreferrer"
+          className="no-print fixed bottom-6 right-6 z-40 w-14 h-14 bg-[#25D366] hover:bg-[#1da851] rounded-full flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110"
+          aria-label="WhatsApp">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+        </a>
+      );
+    }
+
+    function ScrollToTopBtn() {
+      const [show, setShow] = useState(false);
+      useEffect(() => {
+        const h = () => setShow(window.scrollY > 400);
+        window.addEventListener('scroll', h);
+        return () => window.removeEventListener('scroll', h);
+      }, []);
+      if (!show) return null;
+      return (
+        <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="no-print fixed bottom-24 right-6 z-40 w-10 h-10 bg-coffee hover:bg-terracotta text-cream rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-110"
+          aria-label="Scroll to top">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 15l-6-6-6 6"/></svg>
+        </button>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // PUBLIC SITE
+    // ─────────────────────────────────────────────
+    function PublicSite({ addToast }) {
+      const [menuItems,   setMenuItems]   = useState([]);
+      const [gallery,     setGallery]     = useState([]);
+      const [testimonials,setTestimonials]= useState([]);
+      const [settings,    setSettings]    = useState({});
+      const [menuLoading, setMenuLoading] = useState(true);
+      const [galLoading,  setGalLoading]  = useState(true);
+      const [tesLoading,  setTesLoading]  = useState(true);
+
+      useEffect(() => {
+        db.from('menu_items').select('*').order('sort_order')
+          .then(({data}) => { setMenuItems(data || []); setMenuLoading(false); });
+        db.from('gallery').select('*').order('sort_order')
+          .then(({data}) => { setGallery(data || []); setGalLoading(false); });
+        db.from('testimonials').select('*').eq('visible', true)
+          .then(({data}) => { setTestimonials(data || []); setTesLoading(false); });
+        db.from('settings').select('*').limit(1).single()
+          .then(({data}) => { if (data) setSettings(data); });
+      }, []);
+
+      return (
+        <div className="font-body">
+          <Navbar />
+          <HeroSection />
+          <AboutSection />
+          <MenuSection menuItems={menuItems} loading={menuLoading} />
+          <ReservationSection addToast={addToast} />
+          <GallerySection gallery={gallery} loading={galLoading} />
+          <TestimonialsSection testimonials={testimonials} addToast={addToast} loading={tesLoading} />
+          <ContactSection />
+          <Footer />
+          <WhatsAppFAB number={settings.whatsapp} />
+          <ScrollToTopBtn />
+        </div>
+      );
+    }
+
+    // ═══════════════════════════════════════════════
+    // ADMIN DASHBOARD
+    // ═══════════════════════════════════════════════
+
+    // ─────────────────────────────────────────────
+    // ADMIN SIDEBAR
+    // ─────────────────────────────────────────────
+    function AdminSidebar({ active, setActive, collapsed, setCollapsed }) {
+      const items = [
+        { id: 'overview',      label: 'Dashboard',    Icon: IHome },
+        { id: 'menu',          label: 'Menu Manager', Icon: IMenu },
+        { id: 'reservations',  label: 'Reservations', Icon: ICalendar },
+        { id: 'orders',        label: 'Orders',       Icon: IShop },
+        { id: 'gallery',       label: 'Gallery',      Icon: IImage },
+        { id: 'testimonials',  label: 'Reviews',      Icon: IStar },
+      ];
+      return (
+        <aside className={`admin-sidebar no-print bg-espresso border-r border-white/8 flex flex-col shrink-0 transition-all duration-300 ${collapsed ? 'w-16' : 'w-56'}`}>
+          {/* Logo */}
+          <div className="h-14 flex items-center px-4 border-b border-white/8 gap-2 overflow-hidden">
+            <JebenaIcon size={24} color="#C4783B"/>
+            {!collapsed && <span className="font-display text-cream font-bold text-sm whitespace-nowrap">Yeroo Admin</span>}
+          </div>
+
+          {/* Nav */}
+          <nav className="flex-1 py-3 overflow-y-auto">
+            {items.map(({ id, label, Icon }) => (
+              <button key={id} onClick={() => setActive(id)}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all ${
+                  active === id
+                    ? 'bg-terracotta/15 text-terracotta border-r-2 border-terracotta'
+                    : 'text-cream/60 hover:text-cream hover:bg-white/5'
+                }`}>
+                <Icon size={18} className="shrink-0"/>
+                {!collapsed && <span className="truncate">{label}</span>}
+              </button>
+            ))}
+          </nav>
+
+          {/* Collapse toggle */}
+          <div className="p-3 border-t border-white/8">
+            <button onClick={() => setCollapsed(c => !c)}
+              className="w-full flex items-center justify-center gap-2 py-2 text-cream/40 hover:text-cream/70 text-xs transition-colors rounded">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d={collapsed ? 'M9 18l6-6-6-6' : 'M15 18l-6-6 6-6'}/>
+              </svg>
+              {!collapsed && 'Collapse'}
+            </button>
+          </div>
+        </aside>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // ADMIN OVERVIEW
+    // ─────────────────────────────────────────────
+    function AdminOverview({ menuItems, reservations, orders }) {
+      const todayRes = reservations.filter(r => isToday(r.created_at));
+      const todayOrd = orders.filter(o => isToday(o.created_at));
+      const todayRev = todayOrd.reduce((s, o) => s + (o.total || 0), 0);
+      const pending  = reservations.filter(r => r.status === 'pending');
+
+      const cards = [
+        { label: 'Menu Items',        value: menuItems.length,   color: 'bg-coffee',     icon: IMenu },
+        { label: 'Pending Reservations', value: pending.length,  color: 'bg-terracotta', icon: ICalendar },
+        { label: "Today's Orders",    value: todayOrd.length,    color: 'bg-forest',     icon: IShop },
+        { label: "Today's Revenue",   value: fmt(todayRev),      color: 'bg-espresso border border-white/10', icon: IUsers },
+      ];
+
+      return (
+        <div>
+          <h2 className="font-display text-2xl text-espresso font-bold mb-6">Dashboard Overview</h2>
+          <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+            {cards.map(c => (
+              <div key={c.label} className={`${c.color} rounded-2xl p-5 text-cream`}>
+                <div className="flex justify-between items-start mb-4">
+                  <p className="text-sm opacity-70">{c.label}</p>
+                  <c.icon size={18} className="opacity-60"/>
+                </div>
+                <p className="text-2xl font-bold">{c.value}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Recent reservations */}
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+            <h3 className="font-semibold text-espresso mb-4">Recent Reservations</h3>
+            {reservations.length === 0 ? (
+              <p className="text-espresso/40 text-sm py-4 text-center">No reservations yet</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead><tr className="text-espresso/50 border-b text-xs">
+                    <th className="text-left pb-2 font-medium">Name</th>
+                    <th className="text-left pb-2 font-medium">Date</th>
+                    <th className="text-left pb-2 font-medium">Guests</th>
+                    <th className="text-left pb-2 font-medium">Status</th>
+                  </tr></thead>
+                  <tbody>
+                    {reservations.slice(0,6).map(r => (
+                      <tr key={r.id} className="border-b border-gray-50 hover:bg-gray-50">
+                        <td className="py-2.5 font-medium">{r.name}</td>
+                        <td className="py-2.5 text-espresso/60">{r.date} {r.time}</td>
+                        <td className="py-2.5 text-espresso/60">{r.guests}</td>
+                        <td className="py-2.5">
+                          <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                            r.status==='confirmed' ? 'bg-green-100 text-green-800' :
+                            r.status==='cancelled' ? 'bg-red-100 text-red-800' :
+                            'bg-yellow-100 text-yellow-800'
+                          }`}>{r.status}</span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // ADMIN MENU MANAGER
+    // ─────────────────────────────────────────────
+    function AdminMenuManager({ menuItems, setMenuItems, addToast }) {
+      const blank = { name:'', description:'', price:'', category:'Breakfast', is_fasting:false, is_veg:false, is_spicy:false, available:true };
+      const [form,    setForm]    = useState(blank);
+      const [editing, setEditing] = useState(null); // id or null
+      const [adding,  setAdding]  = useState(false);
+      const [busy,    setBusy]    = useState(false);
+      const [expandedCat, setExpandedCat] = useState(null);
+
+      const grouped = CATEGORIES.reduce((acc, cat) => {
+        acc[cat] = menuItems.filter(i => i.category === cat);
+        return acc;
+      }, {});
+
+      const handleSave = async () => {
+        if (!form.name || !form.price) return;
+        setBusy(true);
+        const payload = { ...form, price: parseInt(form.price) };
+        if (editing) {
+          const { error } = await db.from('menu_items').update(payload).eq('id', editing);
+          if (!error) {
+            setMenuItems(items => items.map(i => i.id === editing ? {...i, ...payload} : i));
+            addToast('Item updated');
+          } else addToast('Error updating', 'error');
+          setEditing(null);
+        } else {
+          const { data, error } = await db.from('menu_items').insert(payload).select().single();
+          if (!error) { setMenuItems(items => [...items, data]); addToast('Item added'); }
+          else addToast('Error adding', 'error');
+          setAdding(false);
+        }
+        setForm(blank);
+        setBusy(false);
+      };
+
+      const handleDelete = async (id) => {
+        if (!confirm('Delete this item?')) return;
+        const { error } = await db.from('menu_items').delete().eq('id', id);
+        if (!error) { setMenuItems(items => items.filter(i => i.id !== id)); addToast('Item deleted'); }
+        else addToast('Error deleting', 'error');
+      };
+
+      const toggleAvail = async (item) => {
+        const { error } = await db.from('menu_items').update({ available: !item.available }).eq('id', item.id);
+        if (!error) setMenuItems(items => items.map(i => i.id === item.id ? {...i, available: !i.available} : i));
+      };
+
+      const startEdit = (item) => {
+        setForm({ name: item.name, description: item.description || '', price: item.price, category: item.category,
+          is_fasting: item.is_fasting, is_veg: item.is_veg, is_spicy: item.is_spicy, available: item.available });
+        setEditing(item.id);
+        setAdding(false);
+      };
+
+      const printMenu = () => window.print();
+
+      const inputCls = 'border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-terracotta w-full';
+
+      const ItemForm = () => (
+        <div className="bg-cream/50 border border-coffee/10 rounded-xl p-4 space-y-3 mt-2">
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div><label className="text-xs font-medium text-espresso/60 block mb-1">Name *</label>
+              <input className={inputCls} value={form.name} onChange={e => setForm({...form, name:e.target.value})} placeholder="Item name"/></div>
+            <div><label className="text-xs font-medium text-espresso/60 block mb-1">Price (ETB) *</label>
+              <input className={inputCls} type="number" value={form.price} onChange={e => setForm({...form, price:e.target.value})} placeholder="0"/></div>
+          </div>
+          <div><label className="text-xs font-medium text-espresso/60 block mb-1">Description</label>
+            <input className={inputCls} value={form.description} onChange={e => setForm({...form, description:e.target.value})} placeholder="Short description"/></div>
+          <div><label className="text-xs font-medium text-espresso/60 block mb-1">Category</label>
+            <select className={inputCls} value={form.category} onChange={e => setForm({...form, category:e.target.value})}>
+              {CATEGORIES.map(c => <option key={c}>{c}</option>)}
+            </select></div>
+          <div className="flex flex-wrap gap-4">
+            {[['is_fasting','Fasting'],['is_veg','Vegetarian'],['is_spicy','Spicy'],['available','Available']].map(([k,l]) => (
+              <label key={k} className="flex items-center gap-2 text-sm cursor-pointer">
+                <input type="checkbox" checked={form[k]} onChange={e => setForm({...form, [k]:e.target.checked})} className="accent-terracotta"/>
+                {l}
+              </label>
+            ))}
+          </div>
+          <div className="flex gap-2">
+            <button onClick={handleSave} disabled={busy} className="bg-coffee hover:bg-terracotta text-cream px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-60">
+              {busy ? 'Saving…' : editing ? 'Update Item' : 'Add Item'}
+            </button>
+            <button onClick={() => { setEditing(null); setAdding(false); setForm(blank); }} className="bg-gray-100 hover:bg-gray-200 text-espresso px-4 py-2 rounded-lg text-sm transition-colors">
+              Cancel
+            </button>
+          </div>
+        </div>
+      );
+
+      return (
+        <div>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="font-display text-2xl text-espresso font-bold">Menu Manager</h2>
+            <div className="flex gap-2">
+              <button onClick={printMenu} className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-espresso px-3 py-2 rounded-lg text-sm transition-colors">
+                <IDownload size={14}/> Print
+              </button>
+              <button onClick={() => { setAdding(a => !a); setEditing(null); setForm(blank); }}
+                className="flex items-center gap-2 bg-coffee hover:bg-terracotta text-cream px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                <IPlus size={14}/> Add Item
+              </button>
+            </div>
+          </div>
+
+          {adding && <ItemForm />}
+
+          <div className="space-y-3">
+            {CATEGORIES.map(cat => (
+              <div key={cat} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                <button onClick={() => setExpandedCat(expandedCat === cat ? null : cat)}
+                  className="w-full flex justify-between items-center px-5 py-4 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <span className="font-semibold text-espresso">{cat}</span>
+                    <span className="text-xs bg-coffee/10 text-coffee px-2 py-0.5 rounded-full">{grouped[cat]?.length || 0}</span>
+                  </div>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d={expandedCat === cat ? 'M18 15l-6-6-6 6' : 'M6 9l6 6 6-6'}/>
+                  </svg>
+                </button>
+
+                {expandedCat === cat && (
+                  <div className="border-t border-gray-50">
+                    {editing && menuItems.find(i => i.id === editing)?.category === cat && <div className="px-4 pb-4"><ItemForm /></div>}
+                    {(grouped[cat] || []).map(item => (
+                      <div key={item.id} className={`flex items-start gap-3 px-5 py-3.5 border-b border-gray-50 last:border-0 ${!item.available ? 'opacity-50' : ''}`}>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-medium text-sm text-espresso">{item.name}</span>
+                            <DietBadge item={item} />
+                          </div>
+                          {item.description && <p className="text-xs text-espresso/50 mt-0.5 truncate">{item.description}</p>}
+                        </div>
+                        <span className="font-bold text-terracotta text-sm whitespace-nowrap">{fmt(item.price)}</span>
+                        <div className="flex items-center gap-1">
+                          <button onClick={() => toggleAvail(item)} title={item.available ? 'Mark sold out' : 'Mark available'}
+                            className={`text-xs px-2 py-1 rounded transition-colors ${item.available ? 'bg-green-100 text-green-700 hover:bg-red-100 hover:text-red-700' : 'bg-red-100 text-red-700 hover:bg-green-100 hover:text-green-700'}`}>
+                            {item.available ? '✓' : '✗'}
+                          </button>
+                          <button onClick={() => startEdit(item)} className="p-1.5 text-espresso/40 hover:text-coffee rounded transition-colors"><IEdit size={14}/></button>
+                          <button onClick={() => handleDelete(item.id)} className="p-1.5 text-espresso/40 hover:text-red-600 rounded transition-colors"><ITrash size={14}/></button>
+                        </div>
+                      </div>
+                    ))}
+                    {(grouped[cat] || []).length === 0 && (
+                      <div className="px-5 py-4 text-center text-espresso/30 text-sm">No items in this category</div>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Hidden print template */}
+          <div className="print-menu">
+            <div className="text-center mb-6"><h1 className="text-3xl font-bold">Yeroo Coffee</h1><p className="text-gray-500">Addisu Gebeya, Addis Ababa, Ethiopia</p></div>
+            {CATEGORIES.map(cat => (
+              <div key={cat} className="mb-6">
+                <h2 className="font-bold text-lg border-b pb-1 mb-2">{cat}</h2>
+                {(grouped[cat] || []).filter(i => i.available).map(i => (
+                  <div key={i.id} className="flex justify-between text-sm mb-1">
+                    <span>{i.name}{i.is_fasting ? ' (ፆም)' : ''}</span>
+                    <span className="font-medium">{fmt(i.price)}</span>
+                  </div>
+                ))}
+              </div>
+            ))}
+            <p className="text-xs text-gray-400 mt-8">All prices include 15% VAT & 3% service charges</p>
+          </div>
+        </div>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // ADMIN RESERVATIONS
+    // ─────────────────────────────────────────────
+    function AdminReservations({ reservations, setReservations, addToast }) {
+      const [filterStatus, setFilterStatus] = useState('all');
+      const [filterDate,   setFilterDate]   = useState('');
+
+      const filtered = reservations.filter(r => {
+        if (filterStatus !== 'all' && r.status !== filterStatus) return false;
+        if (filterDate && r.date !== filterDate) return false;
+        return true;
+      });
+
+      const cycle = async (r) => {
+        const next = r.status === 'pending' ? 'confirmed' : r.status === 'confirmed' ? 'cancelled' : 'pending';
+        const { error } = await db.from('reservations').update({ status: next }).eq('id', r.id);
+        if (!error) { setReservations(rs => rs.map(x => x.id === r.id ? {...x, status: next} : x)); addToast('Status updated'); }
+        else addToast('Error', 'error');
+      };
+
+      const handleDelete = async (id) => {
+        if (!confirm('Delete this reservation?')) return;
+        const { error } = await db.from('reservations').delete().eq('id', id);
+        if (!error) { setReservations(rs => rs.filter(x => x.id !== id)); addToast('Deleted'); }
+        else addToast('Error', 'error');
+      };
+
+      const exportCSV = () => {
+        const header = 'Name,Phone,Date,Time,Guests,Special Requests,Status,Created';
+        const rows = filtered.map(r => `"${r.name}","${r.phone}","${r.date}","${r.time}",${r.guests},"${r.special_requests||''}","${r.status}","${r.created_at}"`);
+        const csv = [header, ...rows].join('\n');
+        const url = URL.createObjectURL(new Blob([csv], { type:'text/csv' }));
+        const a = document.createElement('a'); a.href = url; a.download = 'reservations.csv'; a.click();
+        URL.revokeObjectURL(url);
+      };
+
+      const statusColor = (s) => s==='confirmed' ? 'bg-green-100 text-green-800' : s==='cancelled' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800';
+
+      return (
+        <div>
+          <div className="flex justify-between items-center mb-6 flex-wrap gap-3">
+            <h2 className="font-display text-2xl text-espresso font-bold">Reservations</h2>
+            <button onClick={exportCSV} className="flex items-center gap-2 bg-forest text-cream px-4 py-2 rounded-lg text-sm font-medium hover:bg-coffee transition-colors">
+              <IDownload size={14}/> Export CSV
+            </button>
+          </div>
+
+          <div className="flex gap-3 mb-5 flex-wrap">
+            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none">
+              <option value="all">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            <input type="date" value={filterDate} onChange={e => setFilterDate(e.target.value)}
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none"/>
+            {filterDate && <button onClick={() => setFilterDate('')} className="text-sm text-espresso/50 hover:text-espresso">Clear date</button>}
+          </div>
+
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm min-w-[640px]">
+                <thead className="bg-gray-50 text-espresso/60 text-xs">
+                  <tr>
+                    {['Name','Phone','Date & Time','Guests','Requests','Status',''].map(h => (
+                      <th key={h} className="text-left px-4 py-3 font-medium">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map(r => (
+                    <tr key={r.id} className="border-t border-gray-50 hover:bg-gray-50">
+                      <td className="px-4 py-3 font-medium">{r.name}</td>
+                      <td className="px-4 py-3 text-espresso/60">{r.phone}</td>
+                      <td className="px-4 py-3 text-espresso/60 whitespace-nowrap">{r.date} {r.time}</td>
+                      <td className="px-4 py-3 text-center">{r.guests}</td>
+                      <td className="px-4 py-3 text-espresso/50 max-w-32 truncate">{r.special_requests || '—'}</td>
+                      <td className="px-4 py-3">
+                        <button onClick={() => cycle(r)} className={`text-xs px-2.5 py-1 rounded-full font-medium cursor-pointer hover:opacity-80 transition-opacity ${statusColor(r.status)}`}>
+                          {r.status}
+                        </button>
+                      </td>
+                      <td className="px-4 py-3">
+                        <button onClick={() => handleDelete(r.id)} className="p-1 text-espresso/30 hover:text-red-600 transition-colors"><ITrash size={14}/></button>
+                      </td>
+                    </tr>
+                  ))}
+                  {filtered.length === 0 && (
+                    <tr><td colSpan={7} className="text-center py-12 text-espresso/30 text-sm">No reservations found</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // ADMIN ORDERS
+    // ─────────────────────────────────────────────
+    function AdminOrders({ orders, setOrders, menuItems, addToast }) {
+      const blank = { customer_name:'', phone:'', type:'dine-in', notes:'', items:[] };
+      const [form,    setForm]    = useState(blank);
+      const [adding,  setAdding]  = useState(false);
+      const [busy,    setBusy]    = useState(false);
+      const [qtyMap,  setQtyMap]  = useState({});
+
+      const todayOrders  = orders.filter(o => isToday(o.created_at));
+      const todayRevenue = todayOrders.reduce((s, o) => s + (o.total||0), 0);
+
+      const availMenu = menuItems.filter(m => m.available && m.category !== 'Takeaway');
+
+      const toggleItem = (item) => {
+        setQtyMap(q => {
+          const nq = { ...q };
+          if (nq[item.id]) delete nq[item.id]; else nq[item.id] = 1;
+          return nq;
+        });
+      };
+      const setQty = (id, qty) => setQtyMap(q => ({ ...q, [id]: Math.max(1, parseInt(qty)||1) }));
+
+      const buildItems = () => Object.entries(qtyMap).map(([id, qty]) => {
+        const m = menuItems.find(x => x.id === id);
+        return m ? { menu_item_id: id, name: m.name, price: m.price, qty } : null;
+      }).filter(Boolean);
+
+      const calcTotal = () => buildItems().reduce((s, i) => s + i.price * i.qty, 0);
+
+      const submitOrder = async () => {
+        const items = buildItems();
+        if (items.length === 0) { addToast('Add at least one item', 'info'); return; }
+        setBusy(true);
+        const { data: order, error: oErr } = await db.from('orders').insert({
+          customer_name: form.customer_name || 'Walk-in',
+          phone: form.phone, type: form.type, notes: form.notes, total: calcTotal()
+        }).select().single();
+        if (oErr) { addToast('Error creating order', 'error'); setBusy(false); return; }
+
+        const { error: iErr } = await db.from('order_items').insert(
+          items.map(i => ({ ...i, order_id: order.id }))
+        );
+        if (iErr) addToast('Order created but items failed', 'info');
+        else { addToast('Order created!'); }
+
+        const { data: full } = await db.from('orders').select('*, order_items(*)').eq('id', order.id).single();
+        setOrders(os => [full || order, ...os]);
+        setForm(blank); setQtyMap({}); setAdding(false); setBusy(false);
+      };
+
+      const advanceStatus = async (order) => {
+        const seq = ['received','preparing','ready','completed'];
+        const next = seq[Math.min(seq.indexOf(order.status)+1, seq.length-1)];
+        if (next === order.status) return;
+        const { error } = await db.from('orders').update({ status: next }).eq('id', order.id);
+        if (!error) { setOrders(os => os.map(o => o.id===order.id ? {...o, status:next} : o)); addToast('Status updated'); }
+        else addToast('Error', 'error');
+      };
+
+      const deleteOrder = async (id) => {
+        if (!confirm('Delete this order?')) return;
+        const { error } = await db.from('orders').delete().eq('id', id);
+        if (!error) { setOrders(os => os.filter(o => o.id !== id)); addToast('Order deleted'); }
+        else addToast('Error', 'error');
+      };
+
+      const statusStyle = (s) => ({
+        received:  'bg-blue-100 text-blue-800',
+        preparing: 'bg-yellow-100 text-yellow-800',
+        ready:     'bg-orange-100 text-orange-800',
+        completed: 'bg-green-100 text-green-800',
+      }[s] || 'bg-gray-100 text-gray-600');
+
+      return (
+        <div>
+          <div className="flex justify-between items-center mb-2 flex-wrap gap-3">
+            <h2 className="font-display text-2xl text-espresso font-bold">Orders</h2>
+            <button onClick={() => setAdding(a => !a)}
+              className="flex items-center gap-2 bg-coffee hover:bg-terracotta text-cream px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+              <IPlus size={14}/> New Order
+            </button>
+          </div>
+
+          <div className="bg-forest text-cream rounded-xl px-5 py-3 mb-5 flex items-center justify-between">
+            <span className="text-sm opacity-80">Today's Revenue</span>
+            <span className="font-bold text-lg">{fmt(todayRevenue)}</span>
+          </div>
+
+          {adding && (
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-5">
+              <h3 className="font-semibold text-espresso mb-4">New Order</h3>
+              <div className="grid sm:grid-cols-3 gap-3 mb-4">
+                <input placeholder="Customer name" value={form.customer_name} onChange={e => setForm({...form, customer_name:e.target.value})}
+                  className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-terracotta"/>
+                <input placeholder="Phone" value={form.phone} onChange={e => setForm({...form, phone:e.target.value})}
+                  className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-terracotta"/>
+                <select value={form.type} onChange={e => setForm({...form, type:e.target.value})}
+                  className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none">
+                  <option value="dine-in">Dine-in</option>
+                  <option value="takeaway">Takeaway</option>
+                  <option value="delivery">Delivery</option>
+                </select>
+              </div>
+
+              <p className="text-xs font-medium text-espresso/60 mb-2">Select Items:</p>
+              <div className="border border-gray-100 rounded-xl max-h-52 overflow-y-auto mb-3">
+                {availMenu.map(m => (
+                  <label key={m.id} className="flex items-center gap-3 px-4 py-2.5 border-b border-gray-50 last:border-0 cursor-pointer hover:bg-gray-50">
+                    <input type="checkbox" checked={!!qtyMap[m.id]} onChange={() => toggleItem(m)} className="accent-terracotta"/>
+                    <span className="flex-1 text-sm">{m.name}</span>
+                    {qtyMap[m.id] && (
+                      <input type="number" min={1} value={qtyMap[m.id]} onChange={e => setQty(m.id, e.target.value)}
+                        className="w-12 border border-gray-200 rounded px-2 py-1 text-xs text-center" onClick={e => e.stopPropagation()}/>
+                    )}
+                    <span className="text-terracotta text-xs font-medium">{fmt(m.price)}</span>
+                  </label>
+                ))}
+              </div>
+
+              <input placeholder="Notes" value={form.notes} onChange={e => setForm({...form, notes:e.target.value})}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-terracotta mb-3"/>
+
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-espresso">Total: <span className="text-terracotta">{fmt(calcTotal())}</span></span>
+                <div className="flex gap-2">
+                  <button onClick={() => { setAdding(false); setForm(blank); setQtyMap({}); }} className="bg-gray-100 text-espresso px-4 py-2 rounded-lg text-sm hover:bg-gray-200 transition-colors">Cancel</button>
+                  <button onClick={submitOrder} disabled={busy} className="bg-coffee hover:bg-terracotta text-cream px-5 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-60">
+                    {busy ? 'Creating…' : 'Create Order'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm min-w-[600px]">
+                <thead className="bg-gray-50 text-espresso/60 text-xs">
+                  <tr>{['#','Customer','Items','Total','Type','Status','Time',''].map(h => (
+                    <th key={h} className="text-left px-4 py-3 font-medium">{h}</th>
+                  ))}</tr>
+                </thead>
+                <tbody>
+                  {orders.map(o => (
+                    <tr key={o.id} className="border-t border-gray-50 hover:bg-gray-50">
+                      <td className="px-4 py-3 font-mono text-xs text-espresso/50">#{o.order_number}</td>
+                      <td className="px-4 py-3 font-medium">{o.customer_name || 'Walk-in'}</td>
+                      <td className="px-4 py-3 text-espresso/60 max-w-36">
+                        <span className="truncate block">{(o.order_items||[]).map(i => `${i.name}×${i.qty}`).join(', ') || '—'}</span>
+                      </td>
+                      <td className="px-4 py-3 font-bold text-terracotta whitespace-nowrap">{fmt(o.total)}</td>
+                      <td className="px-4 py-3">
+                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{o.type}</span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <button onClick={() => advanceStatus(o)} className={`text-xs px-2.5 py-1 rounded-full font-medium hover:opacity-80 cursor-pointer ${statusStyle(o.status)}`}>
+                          {o.status}
+                        </button>
+                      </td>
+                      <td className="px-4 py-3 text-xs text-espresso/40 whitespace-nowrap">
+                        {new Date(o.created_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}
+                      </td>
+                      <td className="px-4 py-3">
+                        <button onClick={() => deleteOrder(o.id)} className="p-1 text-espresso/30 hover:text-red-600 transition-colors"><ITrash size={14}/></button>
+                      </td>
+                    </tr>
+                  ))}
+                  {orders.length === 0 && (
+                    <tr><td colSpan={8} className="text-center py-12 text-espresso/30 text-sm">No orders yet</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // ADMIN GALLERY
+    // ─────────────────────────────────────────────
+    function AdminGallery({ gallery, setGallery, addToast }) {
+      const [newUrl, setNewUrl] = useState('');
+      const [newCap, setNewCap] = useState('');
+      const [busy,   setBusy]   = useState(false);
+
+      const addImage = async () => {
+        if (!newUrl.startsWith('http')) { addToast('Enter a valid URL', 'error'); return; }
+        setBusy(true);
+        const { data, error } = await db.from('gallery').insert({ url:newUrl, caption:newCap, sort_order: gallery.length }).select().single();
+        if (!error) { setGallery(g => [...g, data]); setNewUrl(''); setNewCap(''); addToast('Image added'); }
+        else addToast('Error adding', 'error');
+        setBusy(false);
+      };
+
+      const updateUrl = async (id, url) => {
+        if (!url.startsWith('http')) return;
+        const { error } = await db.from('gallery').update({ url }).eq('id', id);
+        if (!error) { setGallery(g => g.map(x => x.id===id ? {...x,url} : x)); addToast('Image updated'); }
+        else addToast('Error', 'error');
+      };
+
+      const removeImage = async (id) => {
+        if (!confirm('Remove this image?')) return;
+        const { error } = await db.from('gallery').delete().eq('id', id);
+        if (!error) { setGallery(g => g.filter(x => x.id!==id)); addToast('Image removed'); }
+        else addToast('Error', 'error');
+      };
+
+      return (
+        <div>
+          <h2 className="font-display text-2xl text-espresso font-bold mb-6">Gallery Manager</h2>
+
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-6">
+            <h3 className="font-semibold text-espresso mb-3">Add New Image</h3>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input value={newUrl} onChange={e => setNewUrl(e.target.value)} placeholder="Image URL (https://...)"
+                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-terracotta"/>
+              <input value={newCap} onChange={e => setNewCap(e.target.value)} placeholder="Caption (optional)"
+                className="w-40 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-terracotta"/>
+              <button onClick={addImage} disabled={busy} className="bg-coffee hover:bg-terracotta text-cream px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-60 whitespace-nowrap">
+                {busy ? 'Adding…' : 'Add Image'}
+              </button>
+            </div>
+            <p className="text-xs text-espresso/40 mt-2">Max 20 images. Use Unsplash, Cloudinary or direct image URLs.</p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {gallery.map(img => (
+              <div key={img.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden group">
+                <div className="relative h-36 bg-gray-100 overflow-hidden">
+                  <img src={img.url} alt={img.caption||''} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onError={e => { e.target.style.display='none'; }}/>
+                  <button onClick={() => removeImage(img.id)}
+                    className="absolute top-2 right-2 w-7 h-7 bg-red-600/80 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xs">
+                    ✕
+                  </button>
+                </div>
+                <div className="p-3">
+                  <input defaultValue={img.url} onBlur={e => updateUrl(img.id, e.target.value)}
+                    className="w-full text-xs border border-gray-200 rounded px-2 py-1.5 focus:outline-none focus:border-terracotta text-espresso/70 truncate"/>
+                  {img.caption && <p className="text-xs text-espresso/40 mt-1 truncate">{img.caption}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {gallery.length === 0 && (
+            <div className="text-center py-16 text-espresso/30">
+              <IImage size={32} className="mx-auto mb-3 opacity-30"/>
+              <p className="text-sm">No images yet — add your first image above</p>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // ADMIN TESTIMONIALS
+    // ─────────────────────────────────────────────
+    function AdminTestimonials({ testimonials, setTestimonials, addToast }) {
+      const toggleVisible = async (t) => {
+        const { error } = await db.from('testimonials').update({ visible: !t.visible }).eq('id', t.id);
+        if (!error) { setTestimonials(ts => ts.map(x => x.id===t.id ? {...x, visible:!x.visible} : x)); addToast(!t.visible ? 'Review published' : 'Review hidden'); }
+        else addToast('Error', 'error');
+      };
+
+      const deleteTest = async (id) => {
+        if (!confirm('Delete this review?')) return;
+        const { error } = await db.from('testimonials').delete().eq('id', id);
+        if (!error) { setTestimonials(ts => ts.filter(x => x.id !== id)); addToast('Deleted'); }
+        else addToast('Error', 'error');
+      };
+
+      return (
+        <div>
+          <h2 className="font-display text-2xl text-espresso font-bold mb-6">Guest Reviews</h2>
+          <p className="text-sm text-espresso/50 mb-5">Reviews submitted from the public site need approval before appearing. Toggle visibility to publish.</p>
+
+          <div className="space-y-3">
+            {testimonials.map(t => (
+              <div key={t.id} className={`bg-white rounded-2xl border shadow-sm p-5 flex gap-4 ${t.visible ? 'border-green-200' : 'border-gray-100'}`}>
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="font-semibold text-espresso">{t.name}</span>
+                    <StarRating rating={t.rating} size={14}/>
+                    {t.visible
+                      ? <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Published</span>
+                      : <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">Pending</span>
+                    }
+                  </div>
+                  <p className="text-sm text-espresso/70 italic">"{t.body}"</p>
+                  <p className="text-xs text-espresso/30 mt-2">{new Date(t.created_at).toLocaleDateString()}</p>
+                </div>
+                <div className="flex flex-col gap-2 items-end">
+                  <button onClick={() => toggleVisible(t)} className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-colors ${
+                    t.visible ? 'bg-gray-100 text-espresso hover:bg-gray-200' : 'bg-green-600 text-white hover:bg-green-700'
+                  }`}>
+                    {t.visible ? 'Hide' : 'Publish'}
+                  </button>
+                  <button onClick={() => deleteTest(t.id)} className="p-1 text-espresso/30 hover:text-red-600 transition-colors"><ITrash size={14}/></button>
+                </div>
+              </div>
+            ))}
+            {testimonials.length === 0 && (
+              <div className="text-center py-16 text-espresso/30">
+                <IStar size={32} className="mx-auto mb-3 opacity-30"/>
+                <p className="text-sm">No reviews yet</p>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // ADMIN DASHBOARD
+    // ─────────────────────────────────────────────
+    function AdminDashboard({ addToast }) {
+      const [section,      setSection]      = useState('overview');
+      const [collapsed,    setCollapsed]    = useState(false);
+      const [menuItems,    setMenuItems]    = useState([]);
+      const [reservations, setReservations] = useState([]);
+      const [orders,       setOrders]       = useState([]);
+      const [gallery,      setGallery]      = useState([]);
+      const [testimonials, setTestimonials] = useState([]);
+      const [loading,      setLoading]      = useState(true);
+
+      useEffect(() => {
+        Promise.all([
+          db.from('menu_items').select('*').order('sort_order'),
+          db.from('reservations').select('*').order('created_at', {ascending:false}),
+          db.from('orders').select('*, order_items(*)').order('created_at', {ascending:false}),
+          db.from('gallery').select('*').order('sort_order'),
+          db.from('testimonials').select('*').order('created_at', {ascending:false}),
+        ]).then(([m,r,o,g,t]) => {
+          setMenuItems(m.data || []);
+          setReservations(r.data || []);
+          setOrders(o.data || []);
+          setGallery(g.data || []);
+          setTestimonials(t.data || []);
+          setLoading(false);
+        });
+
+        // Realtime: new orders
+        const ch = db.channel('admin-orders')
+          .on('postgres_changes', { event:'INSERT', schema:'public', table:'orders' }, () => {
+            db.from('orders').select('*, order_items(*)').order('created_at', {ascending:false})
+              .then(({data}) => setOrders(data||[]));
+          }).subscribe();
+        return () => db.removeChannel(ch);
+      }, []);
+
+      const panels = { menuItems, setMenuItems, reservations, setReservations, orders, setOrders, gallery, setGallery, testimonials, setTestimonials, addToast };
+
+      return (
+        <div className="flex h-screen overflow-hidden bg-gray-50 font-body no-print">
+          <AdminSidebar active={section} setActive={setSection} collapsed={collapsed} setCollapsed={setCollapsed}/>
+          <div className="flex-1 flex flex-col overflow-hidden">
+            {/* Top bar */}
+            <header className="h-14 bg-white border-b border-gray-100 flex items-center justify-between px-6 shrink-0">
+              <div>
+                <h1 className="font-semibold text-espresso text-sm capitalize">{section === 'overview' ? 'Dashboard' : section}</h1>
+                <p className="text-xs text-espresso/40">{new Date().toLocaleDateString('en-GB', {weekday:'long', year:'numeric', month:'long', day:'numeric'})}</p>
+              </div>
+              <a href="#" className="flex items-center gap-2 text-xs text-espresso/50 hover:text-espresso transition-colors">
+                <ILogout size={14}/> Back to site
+              </a>
+            </header>
+
+            {/* Content */}
+            <main className="flex-1 overflow-y-auto p-6">
+              {loading ? (
+                <div className="flex items-center justify-center h-64">
+                  <div className="text-center">
+                    <div className="w-8 h-8 border-2 border-terracotta border-t-transparent rounded-full animate-spin mx-auto mb-3"/>
+                    <p className="text-espresso/40 text-sm">Loading…</p>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {section === 'overview'     && <AdminOverview      menuItems={menuItems} reservations={reservations} orders={orders}/>}
+                  {section === 'menu'         && <AdminMenuManager   menuItems={menuItems} setMenuItems={setMenuItems} addToast={addToast}/>}
+                  {section === 'reservations' && <AdminReservations  reservations={reservations} setReservations={setReservations} addToast={addToast}/>}
+                  {section === 'orders'       && <AdminOrders        orders={orders} setOrders={setOrders} menuItems={menuItems} addToast={addToast}/>}
+                  {section === 'gallery'      && <AdminGallery       gallery={gallery} setGallery={setGallery} addToast={addToast}/>}
+                  {section === 'testimonials' && <AdminTestimonials  testimonials={testimonials} setTestimonials={setTestimonials} addToast={addToast}/>}
+                </>
+              )}
+            </main>
+          </div>
+        </div>
+      );
+    }
+
+    // ─────────────────────────────────────────────
+    // APP ROOT
+    // ─────────────────────────────────────────────
+    function App() {
+      const route = useHashRouter();
+      const { toasts, add: addToast } = useToast();
+
+      useEffect(() => {
+        const el = document.getElementById('app-loading');
+        if (el) el.style.display = 'none';
+      }, []);
+
+      return (
+        <>
+          <ToastContainer toasts={toasts} />
+          {route === 'admin'
+            ? <AdminDashboard addToast={addToast} />
+            : <PublicSite     addToast={addToast} />
+          }
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
