@@ -365,7 +365,9 @@
     // ─────────────────────────────────────────────
     function HeroSection() {
       return (
-        <section id="home" className="relative min-h-screen flex items-center justify-center grain bg-gradient-to-b from-espresso via-coffee to-espresso overflow-hidden pt-16">
+        <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16" style={{backgroundImage: 'url(https://d2xsxph8kpxj0f.cloudfront.net/310519663475839067/CUWb5RdecppPLpSegVTTx7/hero-coffee-ceremony-N8z3BWPAHm7uERYnw3DXfU.webp)', backgroundSize: 'cover', backgroundPosition: 'center'}}>
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-espresso/70 via-coffee/60 to-espresso/70"/>
           {/* Decorative elements */}
           <div className="absolute top-20 left-10 w-72 h-72 bg-terracotta/5 rounded-full blur-3xl"/>
           <div className="absolute bottom-20 right-10 w-96 h-96 bg-gold/5 rounded-full blur-3xl"/>
@@ -449,17 +451,16 @@
               {/* Decorative panel */}
               <div className="relative">
                 <div className="absolute -top-6 -left-6 w-full h-full rounded-2xl border-2 border-terracotta/20 bg-terracotta/5"/>
-                <div className="relative bg-gradient-to-br from-coffee to-espresso rounded-2xl overflow-hidden p-12 flex flex-col items-center justify-center min-h-96 shadow-deep">
-                  {/* Ethiopian cross pattern */}
-                  <svg width="160" height="160" viewBox="0 0 200 200" fill="none" className="opacity-15 mb-4">
-                    <rect x="85" y="10" width="30" height="180" rx="4" fill="#D4845A"/>
-                    <rect x="10" y="85" width="180" height="30" rx="4" fill="#D4845A"/>
-                    <circle cx="100" cy="100" r="50" fill="none" stroke="#D4845A" strokeWidth="2"/>
-                  </svg>
-                  <JebenaIcon size={80} color="#D4845A" />
-                  <p className="text-cream font-display text-2xl font-bold mt-6 mb-2">Addisu Gebeya</p>
-                  <p className="text-cream/60 text-sm">Addis Ababa, Ethiopia</p>
-                  <div className="accent-strip w-20 mt-6 rounded-full"/>
+                <div className="relative rounded-2xl overflow-hidden p-12 flex flex-col items-center justify-center min-h-96 shadow-deep" style={{backgroundImage: 'url(https://d2xsxph8kpxj0f.cloudfront.net/310519663475839067/CUWb5RdecppPLpSegVTTx7/about-section-coffee-G6PYnLeXPRX9Axvw3HQwC7.webp)', backgroundSize: 'cover', backgroundPosition: 'center'}}>
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-coffee/80 to-espresso/80"/>
+                  {/* Content */}
+                  <div className="relative z-10">
+                    <JebenaIcon size={80} color="#D4845A" />
+                    <p className="text-cream font-display text-2xl font-bold mt-6 mb-2">Addisu Gebeya</p>
+                    <p className="text-cream/60 text-sm">Addis Ababa, Ethiopia</p>
+                    <div className="accent-strip w-20 mt-6 rounded-full"/>
+                  </div>
                 </div>
               </div>
             </div>
@@ -542,12 +543,36 @@
                 ))}
               </div>
             ) : (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {filtered.map(item => <MenuItemCard key={item.id} item={item} />)}
-                {filtered.length === 0 && (
-                  <div className="col-span-3 text-center py-20 text-espresso/40 text-sm font-light">No items found in this category</div>
-                )}
-              </div>
+              <>
+                {/* Featured items with images */}
+                <div className="grid md:grid-cols-2 gap-6 mb-12">
+                  <div className="group rounded-2xl overflow-hidden shadow-deep hover-lift transition-all h-80" style={{backgroundImage: 'url(https://d2xsxph8kpxj0f.cloudfront.net/310519663475839067/CUWb5RdecppPLpSegVTTx7/menu-breakfast-3KYx2srNarXSTJs7mw95ae.webp)', backgroundSize: 'cover', backgroundPosition: 'center'}}>
+                    <div className="w-full h-full bg-gradient-to-t from-espresso/90 via-espresso/30 to-transparent flex items-end p-6">
+                      <div>
+                        <p className="text-terracotta text-xs font-semibold tracking-widest uppercase mb-2">Featured</p>
+                        <h3 className="text-cream font-display text-2xl font-bold">Ethiopian Breakfast</h3>
+                        <p className="text-cream/70 text-sm mt-2">Traditional recipes with authentic flavors</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="group rounded-2xl overflow-hidden shadow-deep hover-lift transition-all h-80" style={{backgroundImage: 'url(https://d2xsxph8kpxj0f.cloudfront.net/310519663475839067/CUWb5RdecppPLpSegVTTx7/menu-pizza-MijBZC3B3DBPZjvLTWBLZf.webp)', backgroundSize: 'cover', backgroundPosition: 'center'}}>
+                    <div className="w-full h-full bg-gradient-to-t from-espresso/90 via-espresso/30 to-transparent flex items-end p-6">
+                      <div>
+                        <p className="text-terracotta text-xs font-semibold tracking-widest uppercase mb-2">Wood-fired</p>
+                        <h3 className="text-cream font-display text-2xl font-bold">Artisan Pizza</h3>
+                        <p className="text-cream/70 text-sm mt-2">Stone-baked with premium toppings</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* Menu items */}
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {filtered.map(item => <MenuItemCard key={item.id} item={item} />)}
+                  {filtered.length === 0 && (
+                    <div className="col-span-3 text-center py-20 text-espresso/40 text-sm font-light">No items found in this category</div>
+                  )}
+                </div>
+              </>
             )}
 
             <p className="text-center text-espresso/40 text-xs mt-10 font-light italic">All prices include 15% VAT & 3% service charges</p>
@@ -726,7 +751,7 @@
                   <div key={i} className="shimmer h-32 rounded-xl"/>
                 ))}
               </div>
-            ) : (
+            ) : testimonials.length > 0 ? (
               <div className="grid md:grid-cols-3 gap-6 mb-12">
                 {testimonials.map(t => (
                   <div key={t.id} className="bg-cream border border-coffee/8 rounded-xl p-6 hover-lift transition-all shadow-soft">
@@ -735,10 +760,14 @@
                         <span key={i} className="text-gold text-lg">★</span>
                       ))}
                     </div>
-                    <p className="text-espresso/70 text-sm leading-relaxed mb-4 font-light italic">"{t.message}"</p>
-                    <p className="text-espresso font-semibold text-sm">— {t.name}</p>
+                    <p className="text-espresso/70 text-sm leading-relaxed mb-4 font-light italic">\"{{t.message}}\"</p>
+                    <p className="text-espresso font-semibold text-sm">— {{t.name}}</p>
                   </div>
                 ))}
+              </div>
+            ) : (
+              <div className="bg-cream border border-coffee/8 rounded-xl p-8 text-center mb-12">
+                <p className="text-espresso/60 font-light">No reviews yet. Be the first to share your experience!</p>
               </div>
             )}
 
